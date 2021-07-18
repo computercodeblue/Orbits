@@ -178,7 +178,6 @@ namespace ComputerCodeBlue.Orbits
                         result.AppendLine("</div>");
                         currentPosition++;
                     }
-
                 }
                 if (currentPosition % 2 != 1)
                 {
