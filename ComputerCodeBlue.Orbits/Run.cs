@@ -148,6 +148,7 @@ namespace ComputerCodeBlue.Orbits
 
         public string ToHtmlString()
         {
+            var classes = Competitors.Select(c => c.ClassName).Distinct().ToList();
             StringBuilder result = new StringBuilder();
 
             if (!IncludeCompetitors || Competitors.Count < 1 || Name.ToLower().Contains("practice")) return string.Empty;
@@ -158,29 +159,37 @@ namespace ComputerCodeBlue.Orbits
             result.AppendLine("<h2>" + Name + "</h2>");
             result.AppendLine("<div class=\"starting-grid-container\">");
 
-            for (int i = 0; i < Competitors.Count; i++)
+            foreach (string className in classes)
             {
-                result.AppendLine("<div class=\"driver\">");
-                result.AppendLine("<div class=\"driver-position\">" + (i + 1).ToString() + "</div>");
-                result.AppendLine("<div class=\"driver-name\">" + Competitors[i].Number + " " + Competitors[i].FirstName + " " + Competitors[i].LastName + "</div>");
-                if (OrbitsRunGridType == RunGridType.Points)
+                if (classes.Count > 1) result.AppendLine("<h3>" + className + "</h3>");
+                result.AppendLine("<div class=\"starting-grid-container\">");
+                int currentPosition = 1;
+                for (int i = 0; i < Competitors.Count; i++)
                 {
-                    result.AppendLine("<div class=\"driver-points\">" + Competitors[i].Points.ToString() + " pts.</div>");
+                    if (Competitors[i].ClassName == className)
+                    {
+                        result.AppendLine("<div class=\"driver\">");
+                        result.AppendLine("<div class=\"driver-position\">" + currentPosition.ToString() + "</div>");
+                        result.AppendLine("<div class=\"driver-name\">" + Competitors[i].Number + " " + Competitors[i].FirstName + " " + Competitors[i].LastName + "</div>");
+                        if (OrbitsRunGridType == RunGridType.Points)
+                        {
+                            result.AppendLine("<div class=\"driver-points\">" + Competitors[i].Points.ToString() + " pts.</div>");
+                        }
+                        result.AppendLine("</div>");
+                        currentPosition++;
+                    }
+
+                }
+                if (currentPosition % 2 != 1)
+                {
+                    result.AppendLine("<div class=\"driver\">&nbsp;</div>");
                 }
                 result.AppendLine("</div>");
             }
 
-            if (Competitors.Count % 2 != 0)
-            {
-                result.AppendLine("<div class=\"driver\"></div>");
-            }
-
-            result.AppendLine("</div>");
             result.AppendLine("</div>");
             result.AppendLine("<div class=\"right-column\">");
             result.AppendLine("<h2>Points</h2>");
-
-            var classes = Competitors.Select(c => c.ClassName).Distinct().ToList();
 
             foreach (string className in classes)
             {
